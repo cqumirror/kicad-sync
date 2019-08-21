@@ -29,7 +29,7 @@ func main() {
 	for _, n := range htmlquery.Find(doc, "//key") {
 		// fmt.Printf("https://kicad-downloads.s3.cern.ch/%s\n", htmlquery.OutputHTML(n, false))
 		suburl := htmlquery.OutputHTML(n, false)
-		fmt.Printf("s is : %s\n", suburl)
+		fmt.Printf("suburl is : %s\n", suburl)
 		// t := strings.Split(suburl, "/")
 		// fmt.Printf("Split is : %s\n", t)
 		// fmt.Printf("Last / is at : %d\n", strings.LastIndex(suburl, "/"))
@@ -37,24 +37,28 @@ func main() {
 		dirRegexp := regexp.MustCompile(`.+([a-z].[a-z]\/)*\/`)
 		dir := dirRegexp.FindStringSubmatch(suburl)
 		fmt.Printf("dir is :%s\n", dir)
-
+		fmt.Println(len(dir))
 		var Dir = dir[0]
-		exist, err := PathExists(Dir)
-		if err != nil {
-			fmt.Printf("get dir error![%v]\n", err)
-			return
-		}
 
-		if exist {
-			fmt.Printf("has dir![%v]\n", Dir)
+		if Dir == "" {
+			fmt.Printf("len = 0 \n")
 		} else {
-			fmt.Printf("no dir![%v]\n", Dir)
-			// 创建文件夹
-			err := os.Mkdir(Dir, os.ModePerm)
+			exist, err := PathExists(Dir)
 			if err != nil {
-				fmt.Printf("mkdir failed![%v]\n", err)
+				fmt.Printf("get dir error![%v]\n", err)
+				return
+			}
+			if exist {
+				fmt.Printf("has dir![%v]\n", Dir)
 			} else {
-				fmt.Printf("mkdir success!\n")
+				fmt.Printf("no dir![%v]\n", Dir)
+				// 创建文件夹
+				err := os.MkdirAll(Dir, os.ModePerm)
+				if err != nil {
+					fmt.Printf("mkdir failed![%v]\n", err)
+				} else {
+					fmt.Printf("mkdir success!\n")
+				}
 			}
 		}
 
