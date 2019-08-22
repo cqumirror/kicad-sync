@@ -20,6 +20,10 @@ func PathExists(path string) (bool, error) {
 	return false, err
 }
 
+func mkdir(string) {
+
+}
+
 func main() {
 	doc, err := htmlquery.LoadURL("https://kicad-downloads.s3.cern.ch")
 	if err != nil {
@@ -38,11 +42,12 @@ func main() {
 		dir := dirRegexp.FindStringSubmatch(suburl)
 		fmt.Printf("dir is :%s\n", dir)
 		fmt.Println(len(dir))
-		var Dir = dir[0]
+		Dir := dir[0]
 
-		if Dir == "" {
-			fmt.Printf("len = 0 \n")
-		} else {
+		defer func() {
+			if err := recover(); err != nil {
+				fmt.Println(err)
+			}
 			exist, err := PathExists(Dir)
 			if err != nil {
 				fmt.Printf("get dir error![%v]\n", err)
@@ -60,7 +65,7 @@ func main() {
 					fmt.Printf("mkdir success!\n")
 				}
 			}
-		}
+		}()
 
 	}
 
