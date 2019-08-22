@@ -20,8 +20,24 @@ func PathExists(path string) (bool, error) {
 	return false, err
 }
 
-func mkdir(string) {
-
+func mkdir(Dir string) {
+	exist, err := PathExists(Dir)
+	if err != nil {
+		fmt.Printf("get dir error![%v]\n", err)
+		return
+	}
+	if exist {
+		fmt.Printf("has dir![%v]\n", Dir)
+	} else {
+		fmt.Printf("no dir![%v]\n", Dir)
+		// 创建文件夹
+		err := os.MkdirAll(Dir, os.ModePerm)
+		if err != nil {
+			fmt.Printf("mkdir failed![%v]\n", err)
+		} else {
+			fmt.Printf("mkdir success!\n")
+		}
+	}
 }
 
 func main() {
@@ -41,31 +57,20 @@ func main() {
 		dirRegexp := regexp.MustCompile(`.+([a-z].[a-z]\/)*\/`)
 		dir := dirRegexp.FindStringSubmatch(suburl)
 		fmt.Printf("dir is :%s\n", dir)
-		fmt.Println(len(dir))
-		Dir := dir[0]
 
-		defer func() {
-			if err := recover(); err != nil {
-				fmt.Println(err)
-			}
-			exist, err := PathExists(Dir)
-			if err != nil {
-				fmt.Printf("get dir error![%v]\n", err)
-				return
-			}
-			if exist {
-				fmt.Printf("has dir![%v]\n", Dir)
-			} else {
-				fmt.Printf("no dir![%v]\n", Dir)
-				// 创建文件夹
-				err := os.MkdirAll(Dir, os.ModePerm)
-				if err != nil {
-					fmt.Printf("mkdir failed![%v]\n", err)
-				} else {
-					fmt.Printf("mkdir success!\n")
-				}
-			}
-		}()
+		fmt.Println(len(dir))
+		if len(dir) != 0 {
+			Dir := dir[0]
+
+			defer func() {
+				// if err := recover(); err != nil {
+				// 	fmt.Println(err)
+				// }
+				recover()
+			}()
+
+			mkdir(Dir)
+		}
 
 	}
 
